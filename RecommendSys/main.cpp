@@ -48,8 +48,7 @@ double predict(vector<map<int, double>> &train, int user, int item) {
             sum2 += tmp2;
             n++;
         }
-        if (n==0)
-        {
+        if (n==0) {
             // 没有公共的
             continue;
         };
@@ -57,21 +56,21 @@ double predict(vector<map<int, double>> &train, int user, int item) {
         double mean2 = sum2 / n;
         for_avg = mean1;
         double norm1 = 0.0, norm2 = 0.0, s = 0.0;
-        //bool avg0 = true;
+        // bool avg0 = true;
         for (int j=0; j<n; j++) {
             double tmp1 = common1[j] - mean1;
-            //if (tmp1!=0) { avg0 = false; }
+            // if (tmp1!=0) { avg0 = false; }
             double tmp2 = common2[j] - mean2;
             norm1 += pow(tmp1, 2);
             norm2 += pow(tmp2, 2);
             s += tmp1 * tmp2;
         }
         // user公共部分打分都一样
-        //if (avg0) { continue; }
+        // if (avg0) { continue; }
         
         double norm = sqrt(norm1) * sqrt(norm2);
         if (s==0) { continue; }  // 相似度为0的
-         avg.push_back(mean2);
+        avg.push_back(mean2);
         double sc = train[i][item];
         item_score.push_back(sc);  // i对item的评分
         
@@ -84,38 +83,34 @@ double predict(vector<map<int, double>> &train, int user, int item) {
             sim.push_back(s/norm);
     }
     double su = 0.0, ss = 0.0;
-    //if (sim.size()==0) { return for_avg;}
+    // if (sim.size()==0) { return for_avg;}
     /*
     int k=0;
     for (int i=0; i<sim.size(); i++) {
     // 阈值设置为0
-        if(abs(sim[i])>0)
-        {
+        if (abs(sim[i])>0) {
             su += sim[i];
             ss += sim[i] * item_score[i];
             k++;
         }
     }
-    if(k>0)
-    {
+    if (k>0) {
         sim.clear();
         item_score.clear();
         return ss / su;
     }
     */
     double su2 = 0.0, ss2 = 0.0;
-    //if (sim.size()==0) { return for_avg;}
+    // if (sim.size()==0) { return for_avg;}
     int k=0, k2=0;
     for (int i=0; i<sim.size(); i++) {
         // 阈值设置为0
-        if(sim[i]>0.4)
-        {
+        if(sim[i]>0.4) {
             su += sim[i];
             ss += sim[i] * (item_score[i] - avg[i]);
             k++;
         }
-        if(sim[i]<-0.6)
-        {
+        if(sim[i]<-0.6) {
             su2 += sim[i];
             ss2 += sim[i] * (item_score[i] - avg[i]);
             k2++;
@@ -130,8 +125,7 @@ double predict(vector<map<int, double>> &train, int user, int item) {
     else if (k>0 && k2>0) {
         return ((for_avg + ss / su)*k + (for_avg - ss2 / su)*k2 ) / (k+k2);
     }
-    else
-    {
+    else {
         int cnt=0;
         double sum=0;
         map<int, double>::iterator it;
@@ -139,7 +133,6 @@ double predict(vector<map<int, double>> &train, int user, int item) {
         { sum+=it->second; }
         return sum/train[user].size();
     }
-    
 }
 
 bool UserBasedCF(string inf, string testf) {
@@ -152,7 +145,7 @@ bool UserBasedCF(string inf, string testf) {
     int user_size = 0;  // 用户数目
     char aline[50];
     set<int> items;
-    //评分数
+    // 评分数
     int trainnum=0;
     
     while (file>>aline) {
@@ -165,7 +158,7 @@ bool UserBasedCF(string inf, string testf) {
             double score;
             file>>item>>score;
             items.insert(item);
-            //if (score==0) { continue; }
+            // if (score==0) { continue; }
             tmp[item] = score;
         }
         train_data.push_back(tmp);
@@ -194,7 +187,7 @@ bool UserBasedCF(string inf, string testf) {
     // 项目数
     set<int> testitems;
     
-    //计时
+    // 计时
     struct timeval t1,t2;
     double fuse;
     gettimeofday(&t1,NULL);
@@ -250,13 +243,13 @@ double RMSE(string RMSEtest, string result) {
         strtok(aline, "|");
         string tmp2 = strtok(NULL, "|");
         int item_num = stoi(tmp2);
-        //vector<double> tmp(item_num);
+        // vector<double> tmp(item_num);
         for (int i=0; i<item_num; i++) {  // 读入记录
             int item;
             double score;
             file>>item>>score;
             // if (score==0) { continue; }
-            //tmp[i] = score;
+            // tmp[i] = score;
             t_data.push_back(score);
         }
         
@@ -264,7 +257,7 @@ double RMSE(string RMSEtest, string result) {
     }
     file.close();
     
-    //cout<<t_data[0]<<" "<<t_data[0]<<endl;
+    // cout<<t_data[0]<<" "<<t_data[0]<<endl;
     
     ifstream file2(result);  // 预测值，内容读取到file中
     // 确定文件打开
@@ -289,18 +282,18 @@ double RMSE(string RMSEtest, string result) {
     }
     file2.close();
     
-    //cout<<r_data[0]<<" "<<r_data[1]<<endl;
+    // cout<<r_data[0]<<" "<<r_data[1]<<endl;
     
     
     long double sum = 0.0;
     int num = 0;
     
     for (int i=0; i<t_data.size(); i++) {
-        //cout<<t_data[i]<<endl;
-        //cout<<r_data[i]<<endl;
-            sum += pow(t_data[i]-r_data[i], 2);
-        //cout<<"sum:"<<sum<<endl;
-            num++;
+        // cout<<t_data[i]<<endl;
+        // cout<<r_data[i]<<endl;
+        sum += pow(t_data[i]-r_data[i], 2);
+        // cout<<"sum:"<<sum<<endl;
+        num++;
     }
     
     double ret = sqrt(sum / num);
